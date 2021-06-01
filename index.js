@@ -8,10 +8,17 @@ setInterval(() => {
 	const bpb = parseInt(document.getElementById('bpb').value);
 	const offset = parseFloat(document.getElementById('offset').value);
 
+	//const str = parseBeat(document.getElementById('lrc').value);
 	if (src) {
 		const t = ctx.currentTime - playbackStartTime;
 		const b = (t - offset) / (60 / bpm);
-		timingE.textContent = Math.floor((b / bpb) + 1) + "/" + Math.floor((b % bpb) + 1);
+
+		const lrc = document.getElementById('lrc').value.split('\n').map(s => [
+			(s.split(':')[0].split('/')[0] - 1) * bpb + (s.split(':')[0].split('/')[1] - 1),
+			s.split(':')[1]
+		]).reverse().find(l => l[0] < b);
+
+		timingE.textContent = Math.floor((b / bpb) + 1) + "/" + Math.floor((b % bpb) + 1) + (lrc ? lrc[1] : ""); 
 	} else {
 		timingE.textContent = ".";
 	}
